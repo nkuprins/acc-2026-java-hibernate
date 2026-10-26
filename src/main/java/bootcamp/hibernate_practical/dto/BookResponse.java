@@ -14,4 +14,5 @@ public class BookResponse {
     public int publicationYear;
     public boolean available;
     public BorrowedStatus borrowedStatus;
+    public Long version;
 }

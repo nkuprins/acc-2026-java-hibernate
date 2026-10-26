@@ -19,4 +19,7 @@ public class UpdateBookRequest {
     // Boolean, not boolean, so a missing value is null and @NotNull rejects it instead of it becoming false
     @NotNull
     private Boolean available;
+    // The version the client last read, so an update based on an outdated copy can be rejected
+    @NotNull
+    private Long version;
 }

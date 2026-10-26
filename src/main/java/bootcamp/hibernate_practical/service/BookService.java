@@ -8,6 +8,7 @@ import bootcamp.hibernate_practical.entity.BorrowedStatus;
 import bootcamp.hibernate_practical.exception.BookNotFoundException;
 import bootcamp.hibernate_practical.exception.BookStatusConflictException;
 import bootcamp.hibernate_practical.repository.BookRepository;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -45,6 +46,10 @@ public class BookService {
 
     public BookResponse updateBook(Long id, UpdateBookRequest request) {
         Book book = findBookOrThrow(id);
+        // Compared by hand because @Version only checks the version loaded in this request, not the client's
+        if (!book.getVersion().equals(request.getVersion())) {
+            throw new OptimisticLockingFailureException("Book " + id + " is at version " + book.getVersion() + ", request has " + request.getVersion());
+        }
         if (!request.getAvailable() && book.getBorrowedStatus() == BorrowedStatus.BORROWED) {
             throw new BookStatusConflictException("Book " + id + " is borrowed and must be returned before it can be marked unavailable");
         }
@@ -130,7 +135,8 @@ public class BookService {
                 book.getGenre(),
                 book.getPublicationYear(),
                 book.isAvailable(),
-                book.getBorrowedStatus()
+                book.getBorrowedStatus(),
+                book.getVersion()
         );
     }
 }
