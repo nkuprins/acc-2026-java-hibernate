@@ -1,6 +1,7 @@
 package bootcamp.hibernate_practical.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 
@@ -15,5 +16,7 @@ public class UpdateBookRequest {
     // If the JSON has no year, this int stays 0, so @Positive also makes the year required
     @Positive
     private int publicationYear;
-    public boolean available;
+    // Boolean, not boolean, so a missing value is null and @NotNull rejects it instead of it becoming false
+    @NotNull
+    private Boolean available;
 }

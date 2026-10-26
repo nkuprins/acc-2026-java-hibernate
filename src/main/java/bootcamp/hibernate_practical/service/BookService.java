@@ -45,14 +45,14 @@ public class BookService {
 
     public BookResponse updateBook(Long id, UpdateBookRequest request) {
         Book book = findBookOrThrow(id);
-        if (!request.isAvailable() && book.getBorrowedStatus() == BorrowedStatus.BORROWED) {
+        if (!request.getAvailable() && book.getBorrowedStatus() == BorrowedStatus.BORROWED) {
             throw new BookStatusConflictException("Book " + id + " is borrowed and must be returned before it can be marked unavailable");
         }
         book.setTitle(request.getTitle());
         book.setAuthor(request.getAuthor());
         book.setGenre(request.getGenre());
         book.setPublicationYear(request.getPublicationYear());
-        book.setAvailable(request.isAvailable());
+        book.setAvailable(request.getAvailable());
         Book savedBook = bookRepository.save(book);
         return mapToResponse(savedBook);
     }
