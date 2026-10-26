@@ -39,14 +39,12 @@ public class BookService {
     }
 
     public BookResponse getBookById(Long id) {
-        Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new BookNotFoundException(id));
+        Book book = findBookOrThrow(id);
         return mapToResponse(book);
     }
 
     public BookResponse updateBook(Long id, UpdateBookRequest request) {
-        Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new BookNotFoundException(id));
+        Book book = findBookOrThrow(id);
         if (!request.isAvailable() && book.getBorrowedStatus() == BorrowedStatus.BORROWED) {
             throw new BookStatusConflictException("Book " + id + " is borrowed and must be returned before it can be marked unavailable");
         }
@@ -95,8 +93,7 @@ public class BookService {
     }
 
     public BookResponse borrowBook(Long id) {
-        Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new BookNotFoundException(id));
+        Book book = findBookOrThrow(id);
         if (!book.isAvailable()) {
             throw new BookStatusConflictException("Book " + id + " is not in stock");
         }
@@ -109,14 +106,18 @@ public class BookService {
     }
 
     public BookResponse returnBook(Long id) {
-        Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new BookNotFoundException(id));
+        Book book = findBookOrThrow(id);
         if (book.getBorrowedStatus() != BorrowedStatus.BORROWED) {
             throw new BookStatusConflictException("Book " + id + " is not borrowed");
         }
         book.setBorrowedStatus(BorrowedStatus.NOT_BORROWED);
         Book savedBook = bookRepository.save(book);
         return mapToResponse(savedBook);
+    }
+
+    private Book findBookOrThrow(Long id) {
+        return bookRepository.findById(id)
+                .orElseThrow(() -> new BookNotFoundException(id));
     }
 
     private BookResponse mapToResponse(Book book) {
