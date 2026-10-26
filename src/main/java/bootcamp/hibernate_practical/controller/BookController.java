@@ -44,14 +44,12 @@ public class BookController {
 
     @GetMapping("/author/{author}")
     public List<BookResponse> getBooksByAuthor(@PathVariable String author) {
-        // TODO
-        return null;
+        return bookService.findByAuthor(author);
     }
 
     @GetMapping("/available")
     public List<BookResponse> getAvailableBooks() {
-        // TODO
-        return null;
+        return bookService.findAvailableBooks();
     }
 
 }

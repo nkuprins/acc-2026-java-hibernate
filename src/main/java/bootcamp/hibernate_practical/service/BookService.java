@@ -58,13 +58,15 @@ public class BookService {
     }
 
     public List<BookResponse> findByAuthor(String author) {
-        // TODO
-        return null;
+        return bookRepository.findByAuthor(author).stream()
+                .map(this::mapToResponse)
+                .toList();
     }
 
     public List<BookResponse> findAvailableBooks(){
-        // TODO
-        return null;
+        return bookRepository.findByAvailableTrue().stream()
+                .map(this::mapToResponse)
+                .toList();
     }
 
     private BookResponse mapToResponse(Book book) {
