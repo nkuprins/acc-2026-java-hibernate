@@ -58,10 +58,12 @@ public class BookService {
     }
 
     public void deleteBook(Long id) {
-        if (!bookRepository.existsById(id)) {
-            throw new BookNotFoundException(id);
+        // Loads the book instead of using existsById, so the borrowed check can read its status
+        Book book = findBookOrThrow(id);
+        if (book.getBorrowedStatus() == BorrowedStatus.BORROWED) {
+            throw new BookStatusConflictException("Book " + id + " is borrowed and must be returned before it can be deleted");
         }
-        bookRepository.deleteById(id);
+        bookRepository.delete(book);
     }
 
     public List<BookResponse> findByAuthor(String author) {
