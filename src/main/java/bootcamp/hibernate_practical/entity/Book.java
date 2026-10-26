@@ -1,6 +1,8 @@
 package bootcamp.hibernate_practical.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -22,6 +24,8 @@ public class Book {
     private String genre;
     private int publicationYear;
     private boolean available;
+    @Enumerated(EnumType.STRING)
+    private BorrowedStatus borrowedStatus = BorrowedStatus.NOT_BORROWED;
 
     public Book(String title, String author, String genre, int publicationYear, boolean available) {
         this.title = title;

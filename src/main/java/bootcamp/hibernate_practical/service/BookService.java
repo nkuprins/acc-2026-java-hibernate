@@ -4,7 +4,9 @@ import bootcamp.hibernate_practical.dto.BookResponse;
 import bootcamp.hibernate_practical.dto.CreateBookRequest;
 import bootcamp.hibernate_practical.dto.UpdateBookRequest;
 import bootcamp.hibernate_practical.entity.Book;
+import bootcamp.hibernate_practical.entity.BorrowedStatus;
 import bootcamp.hibernate_practical.exception.BookNotFoundException;
+import bootcamp.hibernate_practical.exception.BookStatusConflictException;
 import bootcamp.hibernate_practical.repository.BookRepository;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +47,9 @@ public class BookService {
     public BookResponse updateBook(Long id, UpdateBookRequest request) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException(id));
+        if (!request.isAvailable() && book.getBorrowedStatus() == BorrowedStatus.BORROWED) {
+            throw new BookStatusConflictException("Book " + id + " is borrowed and must be returned before it can be marked unavailable");
+        }
         book.setTitle(request.getTitle());
         book.setAuthor(request.getAuthor());
         book.setGenre(request.getGenre());
@@ -89,6 +94,31 @@ public class BookService {
         return bookRepository.count();
     }
 
+    public BookResponse borrowBook(Long id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new BookNotFoundException(id));
+        if (!book.isAvailable()) {
+            throw new BookStatusConflictException("Book " + id + " is not in stock");
+        }
+        if (book.getBorrowedStatus() == BorrowedStatus.BORROWED) {
+            throw new BookStatusConflictException("Book " + id + " is already borrowed");
+        }
+        book.setBorrowedStatus(BorrowedStatus.BORROWED);
+        Book savedBook = bookRepository.save(book);
+        return mapToResponse(savedBook);
+    }
+
+    public BookResponse returnBook(Long id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new BookNotFoundException(id));
+        if (book.getBorrowedStatus() != BorrowedStatus.BORROWED) {
+            throw new BookStatusConflictException("Book " + id + " is not borrowed");
+        }
+        book.setBorrowedStatus(BorrowedStatus.NOT_BORROWED);
+        Book savedBook = bookRepository.save(book);
+        return mapToResponse(savedBook);
+    }
+
     private BookResponse mapToResponse(Book book) {
         return new BookResponse(
                 book.getId(),
@@ -96,7 +126,8 @@ public class BookService {
                 book.getAuthor(),
                 book.getGenre(),
                 book.getPublicationYear(),
-                book.isAvailable()
+                book.isAvailable(),
+                book.getBorrowedStatus()
         );
     }
 }
