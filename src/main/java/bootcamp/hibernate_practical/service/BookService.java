@@ -54,7 +54,7 @@ public class BookService {
     }
 
     public void deleteBook(Long id) {
-        // TODO
+        bookRepository.deleteById(id);
     }
 
     public List<BookResponse> findByAuthor(String author) {
