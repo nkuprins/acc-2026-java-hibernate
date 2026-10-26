@@ -6,6 +6,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,6 +27,8 @@ public class Book {
     private boolean available;
     @Enumerated(EnumType.STRING)
     private BorrowedStatus borrowedStatus = BorrowedStatus.NOT_BORROWED;
+    @Version
+    private Long version;
 
     public Book(String title, String author, String genre, int publicationYear, boolean available) {
         this.title = title;

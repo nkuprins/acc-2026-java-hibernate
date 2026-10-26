@@ -1,5 +1,6 @@
 package bootcamp.hibernate_practical.exception;
 
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -19,6 +20,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BookStatusConflictException.class)
     public ProblemDetail handleStatusConflict(BookStatusConflictException ex) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
+    @ExceptionHandler(OptimisticLockingFailureException.class)
+    public ProblemDetail handleConcurrentUpdate() {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, "Book was changed by another request, please try again");
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
