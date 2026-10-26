@@ -79,6 +79,12 @@ public class BookService {
                 .toList();
     }
 
+    public List<BookResponse> searchByTitle(String title) {
+        return bookRepository.findByTitleContainingIgnoreCase(title).stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
     public long countBooks() {
         return bookRepository.count();
     }

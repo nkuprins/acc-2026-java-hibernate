@@ -58,6 +58,11 @@ public class BookController {
         return bookService.findPublishedAfter(year);
     }
 
+    @GetMapping("/title/{title}")
+    public List<BookResponse> searchBooksByTitle(@PathVariable String title) {
+        return bookService.searchByTitle(title);
+    }
+
     @GetMapping("/count")
     public long getBookCount() {
         return bookService.countBooks();
