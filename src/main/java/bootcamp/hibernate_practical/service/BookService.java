@@ -73,6 +73,12 @@ public class BookService {
                 .toList();
     }
 
+    public List<BookResponse> findPublishedAfter(int year) {
+        return bookRepository.findByPublicationYearGreaterThan(year).stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
     private BookResponse mapToResponse(Book book) {
         return new BookResponse(
                 book.getId(),
