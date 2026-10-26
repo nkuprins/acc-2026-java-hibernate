@@ -79,6 +79,10 @@ public class BookService {
                 .toList();
     }
 
+    public long countBooks() {
+        return bookRepository.count();
+    }
+
     private BookResponse mapToResponse(Book book) {
         return new BookResponse(
                 book.getId(),

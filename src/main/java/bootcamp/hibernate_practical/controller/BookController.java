@@ -58,4 +58,9 @@ public class BookController {
         return bookService.findPublishedAfter(year);
     }
 
+    @GetMapping("/count")
+    public long getBookCount() {
+        return bookService.countBooks();
+    }
+
 }
