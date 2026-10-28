@@ -1,5 +1,9 @@
 # Practical Task: Library Book Tracker API
 
+> **Note for the reviewer:** `GET /api/external-books/{id}` calls the bootcamp book service and sends `Authorization: Bearer <token>`.
+> The token comes from the `EXTERNAL_SERVICE_TOKEN` environment variable, not from the code.
+> The bootcamp service does not check the token, so the call also works without it; the token is sent to show a secured outbound call.
+
 Starter project for Data Architecture practical task: Build a REST API for managing books in a library using Spring Boot, Spring Data JPA and an H2 database.
 
 ## Task
