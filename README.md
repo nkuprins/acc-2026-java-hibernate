@@ -6,23 +6,20 @@
 
 Starter project for Data Architecture practical task: Build a REST API for managing books in a library using Spring Boot, Spring Data JPA and an H2 database.
 
-## Task
-Complete all of the 'TODO' portions of the code. The finished application should compile and all of the controller endpoints should be functional.
+## Security checks (Bruno screenshots)
+Demo users: `user` / `user` (role USER) and `admin` / `admin` (role ADMIN).
+Screenshots of the manual checks are in [`bruno-screenshots/`](bruno-screenshots/):
 
-## Behavioural Requirements
-- Books can be created
-- All books can be retrieved
-- A single book can be retrieved by ID
-- Books can be deleted
-- Books can be filtered and searched by their fields.
-- Controller delegates to Service, which delegates to Repository
-- DTOs are used for requests and responses
+| Check | Request | Result | Screenshot |
+|---|---|---|---|
+| Unauthenticated request | `GET /api/books` without valid credentials | `401` | [bruno-401.png](bruno-screenshots/bruno-401.png) |
+| USER reads data | `GET /api/books` as `user` | `200` | [bruno-reading-200.png](bruno-screenshots/bruno-reading-200.png) |
+| USER writes data | `POST /api/books` as `user` | `403` | [bruno-user-write-403.png](bruno-screenshots/bruno-user-write-403.png) |
+| ADMIN writes data | `POST /api/books` as `admin` | `201` | [bruno-admin-write-201.png](bruno-screenshots/bruno-admin-write-201.png) |
+| Missing CSRF token | `POST /books` (browser form) as `admin`, without `_csrf` | `403` | [bruno-nocsrf-page-write-403(not-api).png](<bruno-screenshots/bruno-nocsrf-page-write-403(not-api).png>) |
+| External API failure | `GET /api/external-books/999` (external service too slow) | `502` with a clear message | [bruno-external-handled.png](bruno-screenshots/bruno-external-handled.png) |
 
-## Stretch goals
-- Request validation
-- Custom exception handling
-- Searching by partial title
-- Add 'borrow' and 'return' endpoints along with the new 'borrowedStatus' field to the Book entity
+The same checks are automated in `SecurityRulesTests` and `ExternalBookClientTests` (`./mvnw test`).
 
 ## API notes
 
