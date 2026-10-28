@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Library</title>
+</head>
+<body>
+<p>
+    Logged in as <strong sec:authentication="name">user</strong>
+    <span sec:authentication="principal.authorities">[ROLE_USER]</span>
+</p>
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Log out</button>
+</form>
+
+<h1>Books</h1>
+<table>
+    <tr>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Genre</th>
+        <th>Year</th>
+        <th>Available</th>
+        <th>Status</th>
+    </tr>
+    <tr th:each="book : ${books}">
+        <td th:text="${book.title}"></td>
+        <td th:text="${book.author}"></td>
+        <td th:text="${book.genre}"></td>
+        <td th:text="${book.publicationYear}"></td>
+        <td th:text="${book.available}"></td>
+        <td th:text="${book.borrowedStatus}"></td>
+    </tr>
+</table>
+
+<div sec:authorize="hasRole('ADMIN')">
+    <h2>Add a book</h2>
+    <form th:action="@{/books}" th:object="${newBook}" method="post">
+        <p th:each="error : ${#fields.detailedErrors()}" th:text="${error.fieldName + ': ' + error.message}"></p>
+        <label for="title">Title</label>
+        <input id="title" th:field="*{title}">
+        <label for="author">Author</label>
+        <input id="author" th:field="*{author}">
+        <label for="genre">Genre</label>
+        <input id="genre" th:field="*{genre}">
+        <label for="publicationYear">Year</label>
+        <input id="publicationYear" th:field="*{publicationYear}" type="number">
+        <button type="submit">Add</button>
+    </form>
+</div>
+</body>
+</html>
