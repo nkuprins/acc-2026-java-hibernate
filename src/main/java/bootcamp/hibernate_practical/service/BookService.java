@@ -72,7 +72,7 @@ public class BookService {
     }
 
     public List<BookResponse> findByAuthor(String author) {
-        return bookRepository.findByAuthor(author).stream()
+        return bookRepository.findByAuthorIgnoreCase(author).stream()
                 .map(this::mapToResponse)
                 .toList();
     }
