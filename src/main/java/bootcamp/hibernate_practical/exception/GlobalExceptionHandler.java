@@ -34,4 +34,9 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.joining(", "));
         return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, detail);
     }
+
+    @ExceptionHandler(ExternalServiceException.class)
+    public ProblemDetail handleExternalServiceFailure(ExternalServiceException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_GATEWAY, ex.getMessage());
+    }
 }
